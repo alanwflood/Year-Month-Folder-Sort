@@ -12,7 +12,7 @@ def get_date_from_file(filename):
     return datetime.datetime.fromtimestamp(os.stat(filename).st_mtime)
 
 def create_file_list(directories):
-    """ takes string as path, returns tuple(files,date) """
+    """ takes a list of directories, returns a list of tuples (file, month, date) """
     files = glob.glob("")
     # Setup correct globs
     for directory in directories:
@@ -42,11 +42,11 @@ def create_directories(dir_names, parent_dir=""):
 
 def create_directories_for_files(files):
     """ creates month and year directories for a list of files """
-    # Loop over months to create a set
+    # Loop over months to create a month list
     month_list = []
     for i in files:
         month_list.append(i[1])
-    # Loop over years to create a set
+    # Loop over years to create a year list
     year_list = []
     for i in files:
         year_list.append(i[2])
@@ -76,9 +76,9 @@ def confirm_overwrite_file(old_file, new_file):
         sys.stdout.write("Please respond with 'yes' or 'no'")
 
 def move_files_to_folders(files):
-    """ gets tuple(file, month, year) from create_file_list() """
+    """ gets tuple(file, month, year) from create_file_list() then moves the files """
     action = "Moving" if ARGS.move else "Copying"
-    print("\n", action, "Files to new structure!\n")
+    print("\n", action, "files to new structure!\n")
     files_moved = 0
     for i in files:
         try:
@@ -86,6 +86,7 @@ def move_files_to_folders(files):
             old_path = os.path.join(i[0])
             new_path = os.path.join(TARGET, (i[2] + '/' + i[1] + '/' + filename))
             print(os.path.exists(new_path))
+            # Overwrite file check
             if (
                 not os.path.exists(new_path)
                 or ARGS.overwrite
